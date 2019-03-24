@@ -71,7 +71,7 @@ def trvalues(p, x):
 def euler(h, n, x0, v0, file):
     m = 0.026
     g = 9.81
-    k = 0.018
+    k = 0.0051
     pol = iptrack(file)
     val = trvalues(pol, x0)
     v = [v0]
@@ -92,8 +92,8 @@ def euler(h, n, x0, v0, file):
         Nn = m*(g*math.cos(a) + vn**2/val[4])
         N.append(Nn)
 
-        fn = m*((g*math.sin(a) - lf) - (g*math.sin(a) - lf)/(1+c))
-        f.append(fn)
+        fn = m*(g*math.sin(a) - (g*math.sin(a))/(1+c))
+        f.append(lf)
 
     return x, v, y, f, N
 
@@ -222,12 +222,12 @@ def plotfart(file):
 
 def main():
     red = "red1_alldata.bin"
-    green = "green1_alldata.bin"
-    blue = "blue1_alldata.bin"
+    green = "green3_alldata.bin"
+    blue = "blue3_alldata.bin"
     file1 = 'one_nude.txt'  # lang
     file2 = 'two_nude.txt'  # fart data
     file3 = 'nude_data.txt'  # lang
-    current = red
+    current = blue
 
     n = 100000
     h = 0.00001
@@ -240,8 +240,11 @@ def main():
     lsize = 14
     tsize = 12
 
-    x, y = bane(current)
-    plt.plot(x, y, label='Bane')
+    x0, v0 = 0.05, 0
+    x, v, y, f, N = euler(h, n, x0, v0, current)
+    x1, y1 = bane(current)
+
+    plt.plot(x1, y1, label='Bane')
     plt.xlabel('x-posisjon [m]', **font)
     plt.ylabel('y-posisjon [m]', **font)
     plt.legend(loc=1, fontsize=lsize)
@@ -249,8 +252,6 @@ def main():
     plt.savefig('Banegraf.png', dpi=500)
     plt.show()
 
-    x0, v0 = 0.05, 0
-    x, v, y, f, N = euler(h, n, x0, v0, current)
 
 # t1, y1 = getfile(file3)
     #plt.plot(t, y, label='Simulert')
@@ -262,13 +263,13 @@ def main():
     #plt.savefig('ygraf.png', dpi=500)
     # plt.show()
 
-    #plt.plot(x[:len(f)], f, label='Friksjon')
-    #plt.xlabel('x-posisjon [m]', **font)
-    #plt.ylabel('Friksjonskraft [N]', **font)
-    #plt.legend(loc=1, fontsize=lsize)
-    # plt.tick_params(labelsize=tsize)
-    #plt.savefig('friksjon.png', dpi=500)
-    # plt.show()
+    plt.plot(x[:len(f)], f, label='Friksjon')
+    plt.xlabel('x-posisjon [m]', **font)
+    plt.ylabel('Friksjonskraft [N]', **font)
+    plt.legend(loc=1, fontsize=lsize)
+    plt.tick_params(labelsize=tsize)
+    plt.savefig('friksjon.png', dpi=500)
+    plt.show()
 
     plt.plot(x[:len(f)], N, label='Normalkraft')
     plt.xlabel('x-posisjon [m]', **font)

@@ -43,7 +43,7 @@ def trvalues(p, x):
 
 
 # formel: (g*sin a(x) - (kv/m))/(1+ I_o/mr^2) der r er krumningsradius
-#p = iptrack("red1_data.bin")
+# p = iptrack("red1_data.bin")
 
 
 def ode(p):
@@ -85,38 +85,42 @@ def get_data(filename):
     return data
 
 
-data = get_data("red3_alldata.bin")
-
-
-def find_w(data):
+def find_w(data, start, end):
     mass = 0.026
-
-    v_1 = data[0][2]
-    v_2 = data[9][2]
-    y_1 = data[0][1]
-    y_2 = data[9][1]
+    v_1 = data[start][2]
+    v_2 = data[end][2]
+    y_1 = data[start][1]
+    y_2 = data[end][1]
     k_1 = 7/10*mass*(v_1**2)
     k_2 = 7/10*mass*(v_2**2)
     potensial_diff = mass*9.81*(y_1-y_2)
-    #print("v_1: {} , v_2 : {} , y_1 : {}, y_2 {}".format(v_1, v_2, y_1, y_2))
+    # print("v_1: {} , v_2 : {} , y_1 : {}, y_2 {}".format(v_1, v_2, y_1, y_2))
     return k_1 + potensial_diff - k_2
 
 
-def trapezoid():
-    ydat = [3.75501350e-01, 4.05722844e-01, 4.89965153e-01, 5.86403838e-01, 6.60924023e-01,
-            7.28988700e-01, 7.81801743e-01, 8.55190697e-01, 9.54621625e-01, 1.00488866e+00, 1.04739765e+00]
-    xdat = [0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12]
+def trapezoid(data, start, end):
     func = []
-    for val in ydat:
-        func.append(val**2)
-    return np.trapz(func, x=xdat)
+    xvalues = []
+    for i in range(end+1):
+        trueval = data[i+start][2]
+        func.append(trueval**2)
+        xvalues.append(data[i+start][0])
+    return np.trapz(func, x=xvalues)
 
 
-def find_k():
-    return find_w(data)/trapezoid()
+def find_k(data):
+    return find_w(data, 0, 30)/trapezoid(data, 0, 30)
 
 
-print("w: " + str(find_w(data)))
-print("trap: " + str(trapezoid()))
-print("k: " + str(find_k()))
+data_red = get_data("red2_alldata.bin")
+data_blue = get_data("blue1_alldata.bin")
+data_green = get_data("green1_alldata.bin")
+
+blue_k = find_k(data_blue)
+green_k = find_k(data_green)
+red_k = find_k(data_red)
+print("blue k: " + str(blue_k))
+print("green k: " + str(green_k))
+print("red k: " + str(red_k))
+print((blue_k+green_k+red_k)/3)
 # print(get_data("red3_alldata.bin"))

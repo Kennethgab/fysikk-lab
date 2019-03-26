@@ -112,6 +112,26 @@ def find_k(data):
     return find_w(data, 0, 30)/trapezoid(data, 0, 30)
 
 
+def find_avg(datalist):
+    avg = 0
+    for e in datalist:
+        avg = avg + e
+    return avg/3
+
+
+def find_standard(datalist):
+    standard = 0
+    avg = find_avg(datalist)
+    for e in datalist:
+        standard = standard + (e-avg)**2
+    standard = np.sqrt(1/2*standard)
+    return standard
+
+
+def find_usikkerhet(datalist):
+    return find_standard(datalist)/sqrt(3)
+
+
 data_red = get_data("red2_alldata.bin")
 data_blue = get_data("blue1_alldata.bin")
 data_green = get_data("green1_alldata.bin")
@@ -119,8 +139,24 @@ data_green = get_data("green1_alldata.bin")
 blue_k = find_k(data_blue)
 green_k = find_k(data_green)
 red_k = find_k(data_red)
+k_list = [blue_k, green_k, red_k]
 print("blue k: " + str(blue_k))
 print("green k: " + str(green_k))
 print("red k: " + str(red_k))
-print((blue_k+green_k+red_k)/3)
-# print(get_data("red3_alldata.bin"))
+# print((blue_k+green_k+red_k)/3)
+print("avg k: " + str(find_avg(k_list)))
+print("usikkerhet k: " + str(find_usikkerhet(k_list)))
+# avg_k = blue_k+green_k+red_k)/3
+#standard_k = np.sqrt(1/2*((blue_k-avg_k)^2+(green_k-avg_k)^2+(red_k-avg_k)^2))
+# usikkerhet
+vred_list = [1.877434970, 1.709297180, 1.819931445]
+print("avg v red: " + str(find_avg(vred_list)))
+print("usikkerhet v red: " + str(find_usikkerhet(vred_list)))
+
+vblue_list = [1.586149705E0, 1.609394185E0, 1.468681890E0]
+print("avg v blue: " + str(find_avg(vblue_list)))
+print("usikkerhet v blue: " + str(find_usikkerhet(vblue_list)))
+
+vgreen_list = [1.423989411E0, 1.479436028E0, 1.401244473E0]
+print("avg v green: " + str(find_avg(vgreen_list)))
+print("usikkerhet v green: " + str(find_usikkerhet(vgreen_list)))

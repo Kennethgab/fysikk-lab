@@ -88,12 +88,11 @@ def euler(h, n, x0, v0, file):
         y.append(val[0])
         v.append(vn)
         x.append(xn)
-
+        friksjon = c*m*v[i-1]
         Nn = m*(g*math.cos(a) + vn**2/val[4])
         N.append(Nn)
-
-        fn = m*(g*math.sin(a) - (g*math.sin(a))/(1+c))
-        f.append(lf)
+        #fn = m*(g*math.sin(a) - (g*math.sin(a))/(1+c))
+        f.append(friksjon)
 
     return x, v, y, f, N
 
@@ -206,28 +205,32 @@ def plotfart(file):
     vx = []
     vy = []
     t = []
+    x = []
+    y = []
 
     for i in range(len(lines)):
         lines[i] = lines[i].strip()
         lines[i] = lines[i].split('\t')
         try:
+            x.append(float(lines[i][1]))
+            y.append(float(lines[i][2]))
             t.append(float(lines[i][0]))
             vx.append(float(lines[i][3]))
             vy.append(float(lines[i][4]))
         except:
             a = 1
     f.close()
-    return t, vx, vy
+    return t, vx, vy, x, y
 
 
 def main():
-    red = "red1_alldata.bin"
-    green = "green3_alldata.bin"
-    blue = "blue3_alldata.bin"
+    red = "red1_new"
+    green = "ny_green1"
+    blue = "blue1_allnew"
     file1 = 'one_nude.txt'  # lang
     file2 = 'two_nude.txt'  # fart data
     file3 = 'nude_data.txt'  # lang
-    current = blue
+    current = red
 
     n = 100000
     h = 0.00001
@@ -244,7 +247,10 @@ def main():
     x, v, y, f, N = euler(h, n, x0, v0, current)
     x1, y1 = bane(current)
 
-    plt.plot(x1, y1, label='Bane')
+    vt, vx, vy, xm, ym = plotfart(current)
+
+    plt.plot(x1, y1, label='simulert')
+    plt.plot(xm, ym, label='målt')
     plt.xlabel('x-posisjon [m]', **font)
     plt.ylabel('y-posisjon [m]', **font)
     plt.legend(loc=1, fontsize=lsize)
@@ -252,6 +258,13 @@ def main():
     plt.savefig('Banegraf.png', dpi=500)
     plt.show()
 
+    plt.plot(xm,vx, label ="simulert x-hastighet")
+    plt.xlabel('x-posisjon [m]', **font)
+    plt.ylabel('fart i x-retning [m/s]', **font)
+    plt.legend(loc=1, fontsize=lsize)
+    plt.tick_params(labelsize=tsize)
+    plt.savefig('fartoverx.png', dpi=500)
+    plt.show()
 
 # t1, y1 = getfile(file3)
     #plt.plot(t, y, label='Simulert')
@@ -272,6 +285,7 @@ def main():
     plt.show()
 
     plt.plot(x[:len(f)], N, label='Normalkraft')
+    plt.axhline(linewidth=1, color='black')
     plt.xlabel('x-posisjon [m]', **font)
     plt.ylabel('Normalkraft [N]', **font)
     plt.ylim([-1, 2])
@@ -283,8 +297,6 @@ def main():
 
     # plotrate('Data.txt')
 
-    vt, vx, vy = plotfart(current)
-
     plt.plot(t, v, label='Simulert')
     plt.plot(vt, vx, label="Målt x fart")
     # plt.plot(vt,vy, label = "y fart")
@@ -292,8 +304,11 @@ def main():
     plt.ylabel('Fart i x-retning [m/s]', **font)
     plt.legend(loc=1, fontsize=lsize)
     plt.tick_params(labelsize=tsize)
-    plt.savefig('fartsgraf.png', dpi=500)
+    plt.title("Ball høyde h3")
+    plt.savefig('h3_fartsgraf.png', dpi=500)
     plt.show()
+
+
 
 
 main()

@@ -91,7 +91,7 @@ def euler(h, n, x0, v0, file):
         friksjon = c*m*v[i-1]
         Nn = m*(g*math.cos(a) + vn**2/val[4])
         N.append(Nn)
-        #fn = m*(g*math.sin(a) - (g*math.sin(a))/(1+c))
+        # fn = m*(g*math.sin(a) - (g*math.sin(a))/(1+c))
         f.append(friksjon)
 
     return x, v, y, f, N
@@ -106,76 +106,6 @@ def bane(file):
     for i in range(len(x)):
         y.append(trvalues(p, x[i])[0])
     return x, y
-
-
-def energi(y, v):
-    e = []
-    for i in range(len(y)):
-        e.append(m*(g*y[i] + 0.5*(1+c)*m*v[i]**2))
-
-    return e
-
-
-def snitt(liste):
-    s = 0
-    for i in range(len(liste)):
-        s += liste[i]
-    return s/len(liste)
-
-
-def plottap(data):
-    x = [i for i in range(len(data))]
-    plt.plot(x, data, label='Mekanisk Energi')
-    plt.xlabel('Periode')
-    plt.ylabel('Energi [J]')
-    plt.savefig('Energi.png', dpi=500)
-    plt.show()
-
-
-def plotrate(data):
-    f = open(data)
-    d = f.readlines()
-    dat = []
-    for j in d:
-        j = j.strip()
-        j = j.split('\t')
-        dat.append(j)
-    f.close()
-    for i in range(len(dat)):
-        for j in range(len(dat[i])):
-            dat[i][j] = float(dat[i][j])
-
-    energi = [[] for i in range(len(dat[0]))]
-    for i in range(len(dat)):
-        for j in range(len(dat[i])):
-            energi[j].append(dat[i][j])
-    snitten = [snitt(energi[i]) for i in range(len(energi))]
-
-    rate = [100*(snitten[i]-snitten[i+1])/snitten[i]
-            for i in range(len(snitten)-1)]
-    y = [snitt(rate) for i in range(len(rate))]
-    # plt.plot(x,snitten, label = 'Energi')
-    x = [i for i in range(len(energi)-1)]
-
-    font = {'fontname': 'Arial', 'size': '16'}
-
-    plt.plot(x, rate, label='Tapsrate')
-    plt.plot(x, y, linestyle='dashed', label='Gjennomsnitt')
-    plt.xlabel('Periode', **font)
-    plt.ylabel('Prosentvis tapt energi', **font)
-    plt.legend(loc=4, fontsize=14)
-    plt.tick_params(labelsize=12)
-    plt.savefig('Energitap.png', dpi=500)
-    plt.show()
-
-    x = [i for i in range(len(energi))]
-    plt.plot(x, snitten, label='Mekanisk Energi')
-    plt.xlabel('Periode', **font)
-    plt.ylabel('Energi [mJ]', **font)
-    plt.legend(loc=1, fontsize=14)
-    plt.tick_params(labelsize=12)
-    plt.savefig('Energi.png', dpi=500)
-    plt.show()
 
 
 def getfile(file):
@@ -227,10 +157,7 @@ def main():
     red = "red1_new"
     green = "ny_green1"
     blue = "blue1_allnew"
-    file1 = 'one_nude.txt'  # lang
-    file2 = 'two_nude.txt'  # fart data
-    file3 = 'nude_data.txt'  # lang
-    current = red
+   current = red
 
     n = 100000
     h = 0.00001
@@ -265,16 +192,6 @@ def main():
     plt.tick_params(labelsize=tsize)
     plt.savefig('fartoverx.png', dpi=500)
     plt.show()
-
-# t1, y1 = getfile(file3)
-    #plt.plot(t, y, label='Simulert')
-    #plt.plot(t1, y1, label='Målt')
-    #plt.xlabel('Tid [s]', **font)
-    #plt.ylabel('y-posisjon [m]', **font)
-    #plt.legend(loc=1, fontsize=lsize)
-    # plt.tick_params(labelsize=tsize)
-    #plt.savefig('ygraf.png', dpi=500)
-    # plt.show()
 
     plt.plot(x[:len(f)], f, label='Friksjon')
     plt.xlabel('x-posisjon [m]', **font)
